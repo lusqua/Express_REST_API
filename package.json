@@ -10,9 +10,11 @@
   "author": "lusqua",
   "license": "ISC",
   "dependencies": {
+    "debug": "^4.3.3",
     "express": "^4.17.3",
     "mongodb": "^4.4.0",
     "nodemon": "^2.0.15",
+    "password-hash": "^1.2.2",
     "yenv": "^3.0.1"
   }
 }

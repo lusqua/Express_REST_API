@@ -1,4 +1,7 @@
 const db = require("./mongodb");
+const debug = require('debug');//  enable this for debugging
+
+debug.enable("express:*")
 
 db.connectToServer();
 
