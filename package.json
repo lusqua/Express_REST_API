@@ -1,13 +1,13 @@
 {
-  "name": "mucho-loco",
+  "name": "express_rest_api",
   "version": "1.0.0",
-  "description": "mmuuucho loco",
-  "main": "index.js",
+  "description": "This is a template for express REST API projects.",
+  "main": "server.js",
   "scripts": {
-    "test": "node index.js",
+    "test": "node ./bin/server.js",
     "start": "nodemon ./bin/server.js"
   },
-  "author": "",
+  "author": "lusqua",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
