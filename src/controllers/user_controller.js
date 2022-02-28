@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+var ObjectId = require("mongodb").ObjectID;
 
 const passwordHash = require("password-hash");
 const Database_connection = require("../../bin/mongodb");
@@ -49,6 +50,39 @@ router.post("/", (req, res, next) => {
         }
       });
     }
+  });
+});
+
+router.put("/:username", (req, res, next) => {
+  const users = Database_connection.getDb().collection("users");
+
+  edited_user = {
+    updated_at: new Date().toJSON(),
+  };
+
+  if (req.body.new_username) edited_user["username"] = req.body.new_username;
+  if (req.body.new_password)
+    edited_user["password"] = passwordHash.generate(req.body.new_password);
+
+  users.findOne({ username: req.params.username }, (err, usr) => {
+    if (!usr) return res.status(404).json("User not found.");
+    if (!passwordHash.verify(req.body.password, usr.password))
+      return res.status(403).json("Wrong password.");
+    if (passwordHash.verify(req.body.password, usr.password))
+      return res.status(406).json("Can't use same password.");
+
+    users.updateOne(
+      { _id: ObjectId(usr._id) },
+      { $set: edited_user },
+      (err, result) => {
+        if (err) res.status(400).send("Erro ao encontrar o id");
+        else
+          res.status(200).json({
+            status: "ok",
+            edited: edited_user,
+          });
+      }
+    );
   });
 });
 
