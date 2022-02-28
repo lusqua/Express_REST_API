@@ -1,11 +1,12 @@
 const db = require("./mongodb");
-const debug = require('debug');//  enable this for debugging
+const debug = require("debug"); //  enable this for debugging
 
-debug.enable("express:*")
+debug.enable("express:*");
 
 db.connectToServer();
 
 const app = require("../src/routes");
+app.set("trust proxy", true);
 const port = normalizaPort(process.env.PORT || "3000");
 
 function normalizaPort(val) {
