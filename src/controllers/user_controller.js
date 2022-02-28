@@ -1,5 +1,4 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
 var ObjectId = require("mongodb").ObjectID;
 
 const passwordHash = require("password-hash");
