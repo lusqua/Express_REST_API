@@ -19,6 +19,15 @@ router.get("/", (req, res, next) => {
     });
 });
 
+router.get("/:username", (req, res, next) => {
+  const users = Database_connection.getDb().collection("users");
+
+  users.findOne({ username: req.params.username }, (err, usr) => {
+    if (usr) res.status(200).json(usr);
+    else res.status(404).json("Usuário não encontrado.");
+  });
+});
+
 router.post("/", (req, res, next) => {
   const users = Database_connection.getDb().collection("users");
 
