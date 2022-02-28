@@ -1,42 +1,46 @@
 const express = require("express");
 const router = express.Router();
 
-const passwordHash = require('password-hash');
-const db = require("../../bin/mongodb");
+const passwordHash = require("password-hash");
+const Database_connection = require("../../bin/mongodb");
 
-router.get("/user", (req, res, next) => {
-  const dbConnect = db.getDb();
+router.get("/", (req, res, next) => {
+  const users = Database_connection.getDb().collection("users");
 
-  dbConnect
-    .collection("users")
-    .find({})
+  users
+    .find({}, { username: 1, created_at: 1, _id: 0, password: 0 })
     .limit(50)
     .toArray(function (err, result) {
       if (err) {
-        res.status(400).send("Erro em requisitar posts");
+        res.status(400).json("Erro em requisitar posts");
       } else {
         res.json(result);
       }
     });
 });
 
-router.post("/user", (req, res, next) => {
-  const dbConnect = db.getDb();
+router.post("/", (req, res, next) => {
+  const users = Database_connection.getDb().collection("users");
 
-  post = {
-    author: req.body.author,
+  user = {
+    username: req.body.username,
+    password: passwordHash.generate(req.body.password),
     created_at: new Date().toJSON(),
-    content: req.body.content
-  }
+  };
 
-  dbConnect.collection("posts").insertOne( post, function (err, result) {
-    if (err) {
-      res.status(400).send("Erro em criar post");
+  users.findOne({ username: req.body.username }, (err, usr) => {
+    if (usr) {
+      res.json("Usuário já existe");
     } else {
-      res.status(204).send();
+      users.insertOne(user, (err, result) => {
+        if (err) {
+          res.status(400).send("Something failed.");
+        } else {
+          res.status(200).json(result);
+        }
+      });
     }
   });
-
 });
 
 module.exports = router;
