@@ -22,8 +22,8 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const user = await verifyAuth(req.headers.authorization);
-  if (!user) return res.status(401).json();
+  const { status, err, user } = await verifyAuth(req.headers.authorization);
+  if (status != 200) return res.status(status).json(err);
 
   const dbConnect = db.getDb();
 
